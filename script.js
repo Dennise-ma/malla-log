@@ -1,1 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malla Curricular Interactiva</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Define los colores personalizados de Tailwind */
+        :root {
+            --color-pink-light: #FADADD; /* Rosa bajito */
+            --color-pink-dark: #FFC0CB; /* Rosa */
+            --color-text-dark: #333; /* Color de texto oscuro para contraste */
+            --color-text-light: #fff; /* Color de texto claro */
+            --color-passed: #D1D5DB; /* Gris claro para materias pasadas */
+            --color-passed-text: #6B7280; /* Gris oscuro para texto de materias pasadas */
+        }
 
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F3F4F6; /* Un gris muy suave para el fondo */
+            color: var(--color-text-dark);
+        }
+
+        .bg-pink-light {
+            background-color: var(--color-pink-light);
+        }
+        .bg-pink-dark {
+            background-color: var(--color-pink-dark);
+        }
+        .text-pink-dark {
+            color: var(--color-pink-dark);
+        }
+        .border-pink-dark {
+            border-color: var(--color-pink-dark);
+        }
+
+        /* Estilos para las materias */
+        .course-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-card:hover:not(.passed):not(.disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .course-card.passed {
+            background-color: var(--color-passed) !important;
+            color: var(--color-passed-text) !important;
+            text-decoration: line-through;
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        .course-card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none; /* Deshabilita clics */
+            background-color: #E5E7EB; /* Un gris aún más claro para deshabilitado */
+        }
+
+        .course-card.enabled {
+            opacity: 1;
+            pointer-events: auto; /* Habilita clics */
+        }
+
+        /* Estilo para el overlay de "Pasada" */
+        .course-card.passed::after {
+            content: 'PASADA';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-20deg);
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            pointer-events: none; /* Asegura que no interfiera con el clic */
+            z-index: 10;
+            opacity: 0.9;
+        }
+
+        /* Estilos para las líneas de conexión (simplificado para HTML puro) */
+        /* En un gráfico real, esto se haría con SVG o Canvas */
+    </style>
+</head>
+<body class="font-sans bg-gray-100 p-4 sm:p-6 md:p-8">
+    <div class="max-w-5xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
+        <header class="bg-pink-dark text-white p-6 rounded-t-lg">
+            <h1 class="text-3xl font-bold text-center mb-2">Mi Malla Curricular Interactiva</h1>
+            <p class="text-center text-lg">Haz clic en las materias para marcarlas como "pasadas" y desbloquear las siguientes.</p>
+        </header>
+
+        <main class="p-6 sm:p-8">
+            <!-- Semestre I -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-semibold text-pink-700 mb-4 border-b-2 border-pink-dark pb-2">Semestre I</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="semestre-1">
+                    <div id="habilidades-linguisticas" class="course-card bg-pink-light p-4 rounded-lg shadow-md enabled" data-prerequisites="[]" data-opens='["desarrollo-sostenible"]'>
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Habilidades Lingüísticas</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Ninguno</p>
+                        <p class="text-gray-700 text-sm">Abre a: Desarrollo Sostenible</p>
+                    </div>
+                    <div id="analisis-estadistico" class="course-card bg-pink-light p-4 rounded-lg shadow-md enabled" data-prerequisites="[]" data-opens='["estadistica-aplicada"]'>
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Análisis Estadístico</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Ninguno</p>
+                        <p class="text-gray-700 text-sm">Abre a: Estadística Aplicada</p>
+                    </div>
+                    <div id="analisis-matematico" class="course-card bg-pink-light p-4 rounded-lg shadow-md enabled" data-prerequisites="[]" data-opens='["matematicas-financieras", "metodos-matematicos"]'>
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Análisis Matemático</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Ninguno</p>
+                        <p class="text-gray-700 text-sm">Abre a: Matemáticas Financieras, Métodos Matemáticos</p>
+                    </div>
+                    <div id="fundamentos-administracion" class="course-card bg-pink-light p-4 rounded-lg shadow-md enabled" data-prerequisites="[]" data-opens='["contabilidad", "derecho-empresarial", "emprendimiento", "administracion-sistemas-procesos"]'>
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Fundamentos de Administración</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Ninguno</p>
+                        <p class="text-gray-700 text-sm">Abre a: Contabilidad, Derecho Empresarial, Emprendimiento, Administración de Sistemas y Procesos</p>
+                    </div>
+                    <div id="introduccion-ciencia-economica" class="course-card bg-pink-light p-4 rounded-lg shadow-md enabled" data-prerequisites="[]" data-opens='["microeconomia", "macroeconomia", "estructura-economica-ecuatoriana", "microeconomia-ii", "macroeconomia-ii", "economia-internacional"]'>
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Introducción a la Ciencia Económica</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Ninguno</p>
+                        <p class="text-gray-700 text-sm">Abre a: Microeconomía, Macroeconomía, Economía Ecuatoriana, Microeconomía II, Macroeconomía II, Economía Internacional</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Semestre II -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-semibold text-pink-700 mb-4 border-b-2 border-pink-dark pb-2">Semestre II</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="semestre-2">
+                    <div id="etica" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites="[]" data-opens='["realidad-nacional-politica"]'>
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Ética</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Ninguno</p>
+                        <p class="text-gray-700 text-sm">Abre a: Realidad Nacional y Política en el Mundo</p>
+                    </div>
+                    <div id="metodologia-investigacion" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites="[]" data-opens='["diseno-evaluacion-proyectos", "proyecto-integrador"]'>
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Metodología de la Investigación</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Ninguno</p>
+                        <p class="text-gray-700 text-sm">Abre a: Diseño y Evaluación de Proyectos, Proyecto Integrador</p>
+                    </div>
+                    <div id="contabilidad" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites='["fundamentos-administracion"]' data-opens='["cuentas-nacionales"]'>
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Contabilidad</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Fundamentos de Administración</p>
+                        <p class="text-gray-700 text-sm">Abre a: Cuentas Nacionales</p>
+                    </div>
+                    <div id="fundamentos-marketing" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites="[]" data-opens="[]">
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Fundamentos del Marketing</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Ninguno</p>
+                        <p class="text-gray-700 text-sm">Abre a: Ninguno</p>
+                    </div>
+                    <div id="microeconomia" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites='["introduccion-ciencia-economica"]' data-opens='["microeconomia-ii"]'>
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Microeconomía</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Introducción a la Ciencia Económica</p>
+                        <p class="text-gray-700 text-sm">Abre a: Microeconomía II</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Semestre III -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-semibold text-pink-700 mb-4 border-b-2 border-pink-dark pb-2">Semestre III</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="semestre-3">
+                    <div id="desarrollo-sostenible" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites='["habilidades-linguisticas"]' data-opens="[]">
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Desarrollo Sostenible</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Habilidades Lingüísticas</p>
+                        <p class="text-gray-700 text-sm">Abre a: Ninguno</p>
+                    </div>
+                    <div id="derecho-empresarial" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites='["fundamentos-administracion"]' data-opens="[]">
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Derecho Empresarial</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Fundamentos de Administración</p>
+                        <p class="text-gray-700 text-sm">Abre a: Ninguno</p>
+                    </div>
+                    <div id="matematicas-financieras" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites='["analisis-matematico"]' data-opens="[]">
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Matemáticas Financieras</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Análisis Matemático</p>
+                        <p class="text-gray-700 text-sm">Abre a: Ninguno</p>
+                    </div>
+                    <div id="estadistica-aplicada" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites='["analisis-estadistico"]' data-opens="[]">
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Estadística Aplicada</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Análisis Estadístico</p>
+                        <p class="text-gray-700 text-sm">Abre a: Ninguno</p>
+                    </div>
+                    <div id="macroeconomia" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites='["introduccion-ciencia-economica"]' data-opens='["macroeconomia-ii"]'>
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Macroeconomía</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Introducción a la Ciencia Económica</p>
+                        <p class="text-gray-700 text-sm">Abre a: Macroeconomía II</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Semestre IV -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-semibold text-pink-700 mb-4 border-b-2 border-pink-dark pb-2">Semestre IV</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="semestre-4">
+                    <div id="realidad-nacional-politica" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites='["etica"]' data-opens="[]">
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Realidad Nacional y Política en el Mundo</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Ética</p>
+                        <p class="text-gray-700 text-sm">Abre a: Ninguno</p>
+                    </div>
+                    <div id="diseno-evaluacion-proyectos" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites='["metodologia-investigacion"]' data-opens="[]">
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Diseño y Evaluación de Proyectos</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Metodología de la Investigación</p>
+                        <p class="text-gray-700 text-sm">Abre a: Ninguno</p>
+                    </div>
+                    <div id="cuentas-nacionales" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites='["contabilidad"]' data-opens="[]">
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Cuentas Nacionales</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Contabilidad</p>
+                        <p class="text-gray-700 text-sm">Abre a: Ninguno</p>
+                    </div>
+                    <div id="metodos-matematicos" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites='["analisis-matematico"]' data-opens='["teoria-juegos-optimizacion"]'>
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Métodos Matemáticos</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Análisis Matemático</p>
+                        <p class="text-gray-700 text-sm">Abre a: Teoría de Juegos y Optimización</p>
+                    </div>
+                    <div id="macroeconomia-ii" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites='["macroeconomia"]' data-opens="[]">
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Macroeconomía II</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Macroeconomía</p>
+                        <p class="text-gray-700 text-sm">Abre a: Ninguno</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Semestre V -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-semibold text-pink-700 mb-4 border-b-2 border-pink-dark pb-2">Semestre V</h2>
+                <div id="semestre-5" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div id="emprendimiento" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites='["fundamentos-administracion"]' data-opens="[]">
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Emprendimiento</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Fundamentos de Administración</p>
+                        <p class="text-gray-700 text-sm">Abre a: Ninguno</p>
+                    </div>
+                    <div id="decisiones-datos-ia" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites="[]" data-opens="[]">
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Decisiones basadas en datos e IA</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Ninguno</p>
+                        <p class="text-gray-700 text-sm">Abre a: Ninguno</p>
+                    </div>
+                    <div id="estructura-economica-ecuatoriana" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites='["introduccion-ciencia-economica"]' data-opens='["politica-economica-desarrollo"]'>
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Estructura Económica Ecuatoriana</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Introducción a la Ciencia Económica</p>
+                        <p class="text-gray-700 text-sm">Abre a: Política Económica y Desarrollo</p>
+                    </div>
+                    <div id="microeconomia-ii" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites='["microeconomia"]' data-opens='["teoria-desarrollo-economico"]'>
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Microeconomía II</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Microeconomía</p>
+                        <p class="text-gray-700 text-sm">Abre a: Teoría del Desarrollo Económico</p>
+                    </div>
+                    <div id="econometria-i" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites="[]" data-opens='["econometria-ii"]'>
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Econometría I</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Ninguno</p>
+                        <p class="text-gray-700 text-sm">Abre a: Econometría II</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Semestre VI -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-semibold text-pink-700 mb-4 border-b-2 border-pink-dark pb-2">Semestre VI</h2>
+                <div id="semestre-6" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div id="topicos-especiales-economia" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites="[]" data-opens="[]">
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Tópicos Especiales de Economía</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Ninguno</p>
+                        <p class="text-gray-700 text-sm">Abre a: Ninguno</p>
+                    </div>
+                    <div id="historia-economica-mundial" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites="[]" data-opens="[]">
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Historia Económica Mundial</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Ninguno</p>
+                        <p class="text-gray-700 text-sm">Abre a: Ninguno</p>
+                    </div>
+                    <div id="teoria-desarrollo-economico" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites='["microeconomia-ii"]' data-opens='["economia-internacional"]'>
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Teoría del Desarrollo Económico</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Microeconomía II</p>
+                        <p class="text-gray-700 text-sm">Abre a: Economía Internacional</p>
+                    </div>
+                    <div id="teoria-juegos-optimizacion" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites='["metodos-matematicos"]' data-opens='["planificacion-economica-desarrollo-prospectivo"]'>
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Teoría de Juegos y Optimización</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Métodos Matemáticos</p>
+                        <p class="text-gray-700 text-sm">Abre a: Planificación económica y desarrollo prospectivo</p>
+                    </div>
+                    <div id="econometria-ii" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites='["econometria-i"]' data-opens="[]">
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Econometría II</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Econometría I</p>
+                        <p class="text-gray-700 text-sm">Abre a: Ninguno</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Semestre VII -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-semibold text-pink-700 mb-4 border-b-2 border-pink-dark pb-2">Semestre VII</h2>
+                <div id="semestre-7" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div id="politica-economica-desarrollo" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites='["estructura-economica-ecuatoriana"]' data-opens='["economia-comportamiento"]'>
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Política Económica y Desarrollo</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Estructura Económica Ecuatoriana</p>
+                        <p class="text-gray-700 text-sm">Abre a: Economía del Comportamiento</p>
+                    </div>
+                    <div id="economia-territorial" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites="[]" data-opens="[]">
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Economía Territorial</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Ninguno</p>
+                        <p class="text-gray-700 text-sm">Abre a: Ninguno</p>
+                    </div>
+                    <div id="economia-internacional" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites='["introduccion-ciencia-economica", "teoria-desarrollo-economico"]' data-opens="[]">
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Economía Internacional</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Introducción a la Ciencia Económica, Teoría del Desarrollo Económico</p>
+                        <p class="text-gray-700 text-sm">Abre a: Ninguno</p>
+                    </div>
+                    <div id="planificacion-economica-desarrollo-prospectivo" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites='["teoria-juegos-optimizacion"]' data-opens="[]">
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Planificación económica y desarrollo prospectivo</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Teoría de Juegos y Optimización</p>
+                        <p class="text-gray-700 text-sm">Abre a: Ninguno</p>
+                    </div>
+                    <div id="economia-ambiental" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites="[]" data-opens="[]">
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Economía Ambiental</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Ninguno</p>
+                        <p class="text-gray-700 text-sm">Abre a: Ninguno</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Semestre VIII -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-semibold text-pink-700 mb-4 border-b-2 border-pink-dark pb-2">Semestre VIII</h2>
+                <div id="semestre-8" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div id="economia-comportamiento" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites='["politica-economica-desarrollo"]' data-opens="[]">
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Economía del Comportamiento</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Política Económica y Desarrollo</p>
+                        <p class="text-gray-700 text-sm">Abre a: Ninguno</p>
+                    </div>
+                    <div id="politica-fiscal" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites="[]" data-opens="[]">
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Política Fiscal</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Ninguno</p>
+                        <p class="text-gray-700 text-sm">Abre a: Ninguno</p>
+                    </div>
+                    <div id="administracion-sistemas-procesos" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites='["fundamentos-administracion"]' data-opens="[]">
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Administración de Sistemas y Procesos</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Fundamentos de Administración</p>
+                        <p class="text-gray-700 text-sm">Abre a: Ninguno</p>
+                    </div>
+                    <div id="administracion-proyectos" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites="[]" data-opens='["proyecto-integrador"]'>
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Administración de Proyectos</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Ninguno</p>
+                        <p class="text-gray-700 text-sm">Abre a: Proyecto Integrador</p>
+                    </div>
+                    <div id="proyecto-integrador" class="course-card bg-pink-light p-4 rounded-lg shadow-md disabled" data-prerequisites='["metodologia-investigacion", "administracion-proyectos"]' data-opens="[]">
+                        <h3 class="font-bold text-pink-800 text-lg mb-2">Proyecto Integrador</h3>
+                        <p class="text-gray-700 text-sm">Prerrequisitos: Metodología de la Investigación, Administración de Proyectos</p>
+                        <p class="text-gray-700 text-sm">Abre a: Ninguno</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="bg-pink-dark text-white p-4 text-center rounded-b-lg">
+            <p>&copy; 2025 Malla Curricular Interactiva. Todos los derechos reservados.</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const courseCards = document.querySelectorAll('.course-card');
+            let passedCourses = new Set(); // To keep track of passed courses by their IDs
+
+            // Function to check if all prerequisites for a course are met
+            const checkPrerequisites = (courseId) => {
+                const courseElement = document.getElementById(courseId);
+                if (!courseElement) return false;
+
+                const prerequisitesData = courseElement.dataset.prerequisites;
+                // Parse JSON data, ensuring it's valid (using double quotes)
+                const prerequisites = prerequisitesData ? JSON.parse(prerequisitesData) : [];
+
+                if (prerequisites.length === 0) {
+                    return true; // No prerequisites, always enabled
+                }
+
+                // Check if all prerequisites are in the passedCourses set
+                return prerequisites.every(prereqId => passedCourses.has(prereqId));
+            };
+
+            // Function to update the state (enabled/disabled) of all courses
+            const updateCourseStates = () => {
+                courseCards.forEach(card => {
+                    const courseId = card.id;
+
+                    // If a course is already passed, keep it passed
+                    if (passedCourses.has(courseId)) {
+                        card.classList.add('passed');
+                        card.classList.remove('enabled', 'disabled');
+                        return;
+                    }
+
+                    // Check if the course's prerequisites are met
+                    if (checkPrerequisites(courseId)) {
+                        card.classList.add('enabled');
+                        card.classList.remove('disabled');
+                    } else {
+                        card.classList.add('disabled');
+                        card.classList.remove('enabled');
+                    }
+                });
+            };
+
+            // Event listener for clicking on a course card
+            courseCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    const courseId = this.id;
+
+                    // Only allow clicking if the course is enabled and not already passed
+                    if (this.classList.contains('enabled') && !this.classList.contains('passed')) {
+                        this.classList.add('passed');
+                        this.classList.remove('enabled', 'disabled'); // Remove enabled/disabled classes
+                        passedCourses.add(courseId); // Add to passed courses
+
+                        // Get courses this one opens
+                        const opensData = this.dataset.opens;
+                        // Parse JSON data, ensuring it's valid (using double quotes)
+                        const opensCourses = opensData ? JSON.parse(opensData) : [];
+
+                        // Update the state of all courses that depend on this one, or any other course
+                        updateCourseStates();
+                    }
+                });
+            });
+
+            // Initial state update when the page loads
+            updateCourseStates();
+        });
+    </script>
+</body>
+</html>
